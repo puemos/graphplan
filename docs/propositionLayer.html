@@ -1,0 +1,77 @@
+<html>
+  <head>
+  <title>propositionLayer.py</title>
+  </head>
+  <body>
+  <h3>propositionLayer.py (<a href="../propositionLayer.py">original</a>)</h3>
+  <hr>
+  <pre>
+<span style="color: blue; font-weight: bold">from </span>util <span style="color: blue; font-weight: bold">import </span>Pair
+
+<span style="color: blue; font-weight: bold">class </span>PropositionLayer<span style="font-weight: bold">(</span>object<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  A class for an PropositionLayer  in a level of the graph.
+  The layer contains a list of propositions (Proposition objects) and a list of mutex propositions (Pair objects)
+  """
+
+
+  </span><span style="color: blue; font-weight: bold">def </span>__init__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Constructor
+    """
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions <span style="font-weight: bold">= []           </span><span style="color: green; font-style: italic"># list of all the propositions in the layer
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>mutexPropositions <span style="font-weight: bold">= []   </span><span style="color: green; font-style: italic"># list of pairs of propositions that are mutex in the layer
+    
+  </span><span style="color: blue; font-weight: bold">def </span>addProposition<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>proposition<span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># adds proposition to the propositions list
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>proposition<span style="font-weight: bold">)
+    
+  </span><span style="color: blue; font-weight: bold">def </span>removePropositions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>proposition<span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># remove proposition from the propositions list
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions<span style="font-weight: bold">.</span>remove<span style="font-weight: bold">(</span>proposition<span style="font-weight: bold">)
+    
+  </span><span style="color: blue; font-weight: bold">def </span>getPropositions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># retunrs the propositions list
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions    
+  
+  <span style="color: blue; font-weight: bold">def </span>addMutexProp<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>p1<span style="font-weight: bold">, </span>p2<span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># adds the pair(p1,p2) to the mutex propositions list
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>mutexPropositions<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>Pair<span style="font-weight: bold">(</span>p1<span style="font-weight: bold">,</span>p2<span style="font-weight: bold">))
+  
+  </span><span style="color: darkred">"""
+  returns true if proposition p1 and proposition p2 are mutex at this layer
+  """
+  </span><span style="color: blue; font-weight: bold">def </span>isMutex<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>p1<span style="font-weight: bold">, </span>p2<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span>Pair<span style="font-weight: bold">(</span>p1<span style="font-weight: bold">,</span>p2<span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>mutexPropositions  
+  
+  <span style="color: blue; font-weight: bold">def </span>getMutexProps<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># returns the mutex propositions list
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>mutexPropositions  
+  
+  <span style="color: blue; font-weight: bold">def </span>allPrecondsInLayer<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>action<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    returns true if all propositions that are preconditions of the
+    action exist in this layer (i.e. the action can be applied)
+    """
+    </span><span style="color: blue; font-weight: bold">for </span>pre <span style="color: blue; font-weight: bold">in </span>action<span style="font-weight: bold">.</span>getPre<span style="font-weight: bold">():
+      </span><span style="color: blue; font-weight: bold">if not</span><span style="font-weight: bold">(</span>pre <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions<span style="font-weight: bold">):
+        </span><span style="color: blue; font-weight: bold">return False
+    for </span>pre1 <span style="color: blue; font-weight: bold">in </span>action<span style="font-weight: bold">.</span>getPre<span style="font-weight: bold">():
+      </span><span style="color: blue; font-weight: bold">for </span>pre2 <span style="color: blue; font-weight: bold">in </span>action<span style="font-weight: bold">.</span>getPre<span style="font-weight: bold">():
+        </span><span style="color: blue; font-weight: bold">if </span>Pair<span style="font-weight: bold">(</span>pre1<span style="font-weight: bold">,</span>pre2<span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>mutexPropositions<span style="font-weight: bold">:
+          </span><span style="color: blue; font-weight: bold">return False
+    
+    return True
+
+  def </span>__eq__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="font-weight: bold">(</span>isinstance<span style="font-weight: bold">(</span>other<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__class__<span style="font-weight: bold">)
+      </span><span style="color: blue; font-weight: bold">and </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__dict__ <span style="font-weight: bold">== </span>other<span style="font-weight: bold">.</span>__dict__<span style="font-weight: bold">)
+
+  </span><span style="color: blue; font-weight: bold">def </span>__ne__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return not </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__eq__<span style="font-weight: bold">(</span>other<span style="font-weight: bold">)
+      
+</span>
+  </pre>
+  </body>
+  </html>
+  

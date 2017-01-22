@@ -1,0 +1,333 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Project 3: Graphplan</title>
+<link href="projects.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<h2>Project 3: Graphplan
+</h2>
+
+<!--announcements-->
+
+<blockquote>
+    <center>
+    <img src="crane.jpg" width="400px" />
+    </center>
+     
+</blockquote>
+
+<h4>Due on December 20, 23:00</h4>
+
+<h3>Introduction</h3>
+
+In this project you will implement parts of the Graphplan algorithm and design heuristics driven form the planning graph.
+
+In the first part you complete the implementation of the Graphplan and test the algorithms on problems from the "dock-worker robot" domain.
+In the second part you will use a relaxed version of the planning graph to derive heuristics for A*. 
+In the last part you will automatically create domain and problem files for the <a href = "http://en.wikipedia.org/wiki/Tower_of_Hanoi">Tower of Hanoi</a> puzzle. 
+
+<p>The code for this project consists of several Python files,
+some of which you will need to read and understand in order to complete the assignment, and some of which you can ignore. You can download all the code and supporting files (including this description) as a <a href="graphplan.zip">zip archive</a>.
+
+<table border="0" cellpadding="10">
+  <tr><td colspan="2"><b>Files you'll edit:</b></td></tr>
+  
+  <tr><td><code><a href="docs/graphPlan.html">graphPlan.py</a></code></td>
+  <td>Where the graphPlan algorithm runs, this module in charge of creating the Graphplan, extending it if needed and extracting a plan.</td></tr>
+  
+  <tr><td><code><a href="docs/planGraphLevel.html">planGraphLevel.py</a></code></td>
+  <td>Representation of one level (actions layer and propositions layer) of the graph</td></tr>
+
+  <tr><td><code><a href="docs/planningProblem.html">planningProblem.py</a></code></td>
+  <td>Representation of planning problem as a search problem</td></tr>
+  
+  <tr><td><code><a href="docs/hanoi.html">hanoi.py</a></code></td>
+  <td>Where the domain and problem files are created</td></tr>
+
+
+  <tr><td colspan="2"><b>Files you might want to look at:</b></td></tr>
+  
+  <tr><td><code><a href="docs/action.html">action.py</a></code></td>
+  <td>The action object.</td></tr>
+
+  <tr><td><code><a href="docs/proposition.html">proposition.py</a></code></td>
+  <td>The proposition object.</td></tr>
+
+  <tr><td><code><a href="docs/actionLayer.html">actionLayer.py</a></code></td>
+  <td>The actionLayer object.</td></tr>
+
+  <tr><td><code><a href="docs/propositionLayer.html">propositionLayer.py</a></code></td>
+  <td>The propositionLayer object.</td></tr>
+
+  <tr><td><code><a href="docs/util.html">util.py</a></code></td>
+  <td>Useful data structures.</td></tr>
+  
+
+  
+
+</table>
+<p>
+<p><strong>What to submit:</strong> You will fill in portions of <code><a href="docs/graphPlan.html">graphPlan.py</a></code>, 
+ <code><a href="docs/planGraphLevel.html">planGraphLevel.py</a></code>, <code><a href="docs/planningProblem.html">planningProblem.py</a></code> and <a href="docs/hanoi.html">hanoi.py</a>
+ during the assignment. In addition, You will create two instances of the DWR domain, those problem files should be named <code>dwr1.txt</code> and <code>dwr2.txt</code>.
+ You should submit these six files (only) and a README.txt as a zip file in the moodle website. <b>Each team should submit exactly one file!</b></p>
+  
+<p><strong>Evaluation:</strong> Your code will be autograded for technical
+correctness.
+Please <em>do not</em> change the names of any provided functions or classes within the code, or you will wreak havoc on the autograder. Please make sure you follow the readme format <b>exactly</b>.
+
+ 
+<p><strong>Academic Dishonesty:</strong> We will be checking your code against other submissions in the class for logical redundancy. If you copy someone else's code and submit it with minor changes, we will know. These cheat detectors are quite hard to fool, so please don't try. We trust you all to submit your own work only; <em>please</em> don't let us down. If you do, we will pursue the strongest consequences available to us.
+
+<p><strong>Getting Help:</strong> You are probably not alone. Please post your questions via the <a href="http://moodle2.cs.huji.ac.il/nu15/mod/forum/view.php?id=19775">
+Project 3 forum
+</a> on the <a href="http://www.cs.huji.ac.il/~ai"> course website</a>.
+
+<strong>Please do not write to our personal e-mail addresses!</strong>
+
+<p><strong>Readme format: </strong>Please submit a README.txt file. The README should include the
+following lines (exactly):<br>
+</p>
+
+<ol>
+  <li>id1 --- student 1 id<br>
+  <li>id2 --- student 2 id</li>
+  <li>***** --- 5 stars denote end of i.d info.  </li>
+  <li>comments</li>
+
+</ol>
+For an example check out the <a href="README.txt"> README.txt</a> provided with your project. This
+README will be read by a script, calling an autograder.
+Note that if you decide to submit alone, please remove lines 2, i.e.<br>
+<ol>
+  <li>id1 --- student 1 id<br>
+  <li>***** --- 5 stars denote end of i.d info.  </li>
+  <li>comments</li>
+</ol>
+</ol>
+<p></p>
+
+<h3> GraphPlan  </h3>
+
+We will start with completing all the necessary method for the Graphplan algorithm.
+Therefore, our algorithm will build the planning graph with mutax relation.
+Each level in the planing graph is composed of two layers: the actions layer and the propositions layer.
+First, we will complete the methods that detacts mutex relation between   actions and propositions. 
+<p><em><strong>Question 1 (2 points) </strong></em>
+
+Two actions at the same level are mutex if either they have inconsistent effects, they interfere one with the other or they have competing needs. Two of those conditions happen regardless to the other actions and proposition in the level, so a good idea would  be to check these conditions before the creation of the graph. 
+Implement <code>independentPair</code> function in <code>graphPlan.py</code>. This function returns true if the actions  neither have inconsistent effects, nor they interfere one with the other.  
+
+<p> <em>Hint:</em> Make sure to check out <code><a href="docs/action.html">action.py!</a></code>
+ 
+
+<p><em><strong>Question 2 (2 points) </strong></em>
+
+Complete the formulation of Mutex actions. Implement <code>haveCompetingNeeds</code> in <code>planGraphLevel.py</code>. 
+This function returns true if the two actions have competing needs, given the list of the mutex propositions from the previous level (list of pairs of propositions).
+
+
+<p> <em>Hint:</em> Check out <code>Pair </code> in  <code><a href="docs/util.html">util.py</a></code> </p>
+</p>
+<p>
+After you have completed <code>haveCompetingNeeds</code>, go over the function <code>mutexActions</code>.
+This function returns true if the actions <code>a1</code> and <code>a2</code> are mutex actions (given given the list of the mutex propositions from the previous level).
+We first check whether <code>a1</code> and <code>a2</code> are in PlanGraphLevel.independentActions,
+this is the list of all the independent pair of actions (according to your implementation in question 1).
+If so, we check whether <code>a1</code> and <code>a2</code> have competing needs
+</p>
+
+
+<p><em><strong>Question 3 (2 points) </strong></em>
+
+Implement <code>mutexPropositions</code> in <code>planGraphLevel.py</code>.
+This function returns true if the two propositions are mutex, given the list the of mutex actions form the current level (list of pairs of actions). 
+</p>
+<p> <em>Hint:</em>
+Remember that two propositions are mutex,
+if all ways of achieving the propositions (that is, actions at the same
+level) are pairwise mutex.
+</p>
+<p> <em>Hint:</em> <code>Proposition.getProducers</code>
+ returns the list of all the possible actions in the layer that have the proposition on their add list.
+</p>
+
+
+<p>The following 5 questions complete the implementation of the graphPlan algorithm.
+After we have detected mutex relations we can expend the planning graph. 
+Using the previous proposition  layer we can construct the current actions layer.
+</p>
+
+<p> <em>Hint:</em> Make sure to check out 
+<code><a href="docs/action.html">action.py</a></code>, <code><a href="docs/proposition.html">proposition.py</a></code>,
+<code><a href="docs/actionLayer.html">actionLayer.py</a></code> and <code><a href="docs/propositionLayer.html">propositionLayer.py</a></code> </p>
+
+<p><em><strong>Question 4 (2 points) </strong></em>
+Implement <code>updateActionLayer</code> function in <code>planGraphLevel.py</code>. This function receives the previous proposition layer (go over <code><a href="docs/actionLayer.html">actionLayer.py</a></code> and <code><a href="docs/propositionLayer.html">propositionLayer.py</a></code>!) and updates the actions in the current action layer. 
+
+<p> <em>Hint:</em> We add an action to the layer if its preconditions are in the previous propositions
+layer, and the preconditions are not pairwise mutex.
+</p>
+
+<p><em><strong>Question 5 (1 points) </strong></em>
+Implement <code>updateMutexActions</code> function in <code>planGraphLevel.py</code>. This function receives a list of the mutex proposition in the previous level and updates the mutex actions in the current action layer. 
+</p>
+<p>
+Next, Using the current actions  layer we  construct the current propositions layer.
+<p>
+<p><em><strong>Question 6 (2 points) </strong></em>
+Implement <code>updatePropositionLayer</code> function in <code>planGraphLevel.py</code>. This function updates the propositions
+ in the current	proposition layer, given the current action layer (<code>self.actionLayer</code>).</p> 
+<p> When you add a proposition to the current layer, don't forget to update the producers list!<p>
+
+<p> <em>Hint:</em> The same proposition in different layers might have different producers lists, thus  two different instances should be created.</p>
+
+<p> <em>Hint:</em> Go over <code><a href="docs/proposition.html">proposition.py</a></code>!</p>
+
+<p><em><strong>Question 7 (1 points) </strong></em>
+Implement <code>updateMutexProposition</code> function in <code>planGraphLevel.py</code>. This function updates the mutex propositions  in the current proposition layer. 
+</p>
+
+<p> <em>Hint:</em> We saw in the tirgul that there are two types of mutex relation between proposition. however, only one of them is relevant, when we use STRIPS	 to represent the planning problem.</p>
+
+<p>
+	Now we can complete the expansion of the planning graph. 
+</p>
+
+
+<p><em><strong>Question 8 (1 points) </strong></em>
+Implement the <code>expand</code> function in <code>planGraphLevel.py</code>. This function receives the previous level and updates the current. 
+Your algorithm should work as follows:
+ First, given the propositions and the list of mutex propositions from the previous layer, set the actions in the  action layer. 
+ Then, set the mutex action in the action layer. 
+ Finally, given all the actions in the current layer, set the propositions and their mutex relation in the propositions layer. 
+</p>
+ 
+<p>  Now you should be able to run your code on the provided domain and problem </p>
+<pre>python3 graphPlan.py dwrDomain.txt dwrProblem.txt</pre>
+<p>This domain and problem are 
+simplifications of the dock-worker-robot domain (for which you can find the full specification 
+<a href="http://www.aiai.ed.ac.uk/~gwickler/pddl/dwr/operators.pddl">here</a>). 
+In this simplified domain, there are two robots <code>q</code> and  <code>r</code>, 
+two containers <code>a</code> and <code>b</code>  and two locations <code>1</code> and <code>2</code>. 
+Each robot and container
+can be in either location (E.g., the proposition <code>r2</code> represents the fact that the robot  <code>r</code>
+is at location <code>2</code>). In addition, each robot can holds at most 1 container 
+ (E.g., the proposition <code>uq</code> represents the fact that the robot  <code>q</code> is free and 
+ the proposition <code>bq</code> represents the fact that the robot  <code>q</code> holds at most the container 
+<code>b</code>). The robots can move between  the two  locations.
+
+
+
+The simplified domain will make 
+debugging easier, and it has already been propositionalized so that you can directly apply Graphplan.
+<p> <em>Hint:</em> The solution found by your implementation should return a plan with 6 actions
+(excluding 4 noOp actions).</p>
+ 
+<p><em><strong>Question 9 (2 points) </strong></em>
+Create two more problem instances in the DWR domain by changing the initial state or 
+the goal state or both. One instance (<code>dwr1.txt</code>) should have a goal state that can be achieved within at least 8 actions (without noOps). The 
+other instance (<code>dwr2.txt</code>) should have a goal state that cannot be achieved; make sure your code fails
+on this problem.
+
+<pre>python3 graphPlan.py dwrDomain.txt dwr1.txt</pre>
+<pre>python3 graphPlan.py dwrDomain.txt dwr2.txt</pre> 
+</p>
+
+<h3> Planning Graph   as a Heuristic for A*</h3>
+<p> An effective approach to planning is to derive from the planning graph heuristics, and  then to use a 
+search algorithm for choosing operators and generate a plan. </p>
+
+<p><em><strong>Question 10 (2 points) </strong></em>
+Complete the implementation of  <code>PlanningProblem</code> in <code>planningProblem.py</code> as a search problem.</p>
+<p> In order to run the search algorithms, you can either add your <code>search.py</code> from project 1 to the project folder, or use our complied file (<code>CPF/search.pyc</code>).
+If you choose to use our compiled file, there is no need to move any file.
+Now, your search agent should solve:
+
+<pre>python3 planningProblem.py dwrDomain.txt dwrProblem.txt zero</pre>
+where zero means the null heuristic.
+</p>
+<p> <em>Hint:</em> It is possible that a <code>noOp</code> action will be in an optimal plan?</p>
+
+<p><em><strong>Question 11 (2 points) </strong></em>
+
+Implement the <code>maxLevel</code> heuristic in <code>planningProblem.py</code>. The heuristic is computed as follows:
+For each state, expand the planning graph, omitting the computation of mutex relations, until you
+reach a level that includes all goal propositions. The heuristic value is the number of levels
+required to expand all goal propositions. If the goal is not reachable from the state your heuristic should return <code>float('inf')</code></p>
+
+<p> <em>Hint:</em> The expanding of the planning graph in the heuristic calculation is very similar to the one in question 8. You can, but you don't have to, use the methods that you have already implemented  in <code>planGraphLevel.py</code> and implement part of the heuristic in <code>expandWithoutMutex</code>.</p>
+
+<p> <em>Hint:</em> <code>isFixed</code> returns true if the graph hasn't changed in the last expansion.</p>
+
+<p> <em>Hint:</em> It might be a good idea to check out <code>graphPlan</code> in <code>graphPlan.py</code></p>
+
+<p>Now, your search agent should solve:
+
+<pre>python3 planningProblem.py dwrDomain.txt dwrProblem.txt max</pre></p>
+
+<p><em><strong>Question12 (2 points) </strong></em>
+
+Implement the <code>levelSum</code> heuristic in <code>planningProblem.py</code>. The heuristic is computed as follows:
+For each state, expand the planning graph, omitting the computation of mutex relations, until you
+reach a level that includes all goal propositions. The heuristic value is the sum of sub-goals level they first appeared.
+If the goal is not reachable from the state your heuristic should return <code>float('inf')</code>.
+
+<pre>python3 planningProblem.py dwrDomain.txt dwrProblem.txt sum</pre></p>
+
+<h3> Tower of Hanoi</h3>
+
+The <a href = "http://en.wikipedia.org/wiki/Tower_of_Hanoi">Tower of Hanoi</a> consists of three pegs
+and a of disks of different sizes. 
+The puzzle starts with the disks in a neat stack in ascending order of size on one peg, the smallest at the top, thus making a conical shape. 
+The objective of the puzzle is to move the entire stack to another peg, obeying the following constrains:
+ <ul>
+  <li>Only one disk can be moved at a time</li>
+  <li>Each move consists of taking the upper disk from one of the stacks and placing it on top of another stack i.e. a disk can only be moved if it is the uppermost disk on a stack.</li>
+  <li>No disk may be placed on top of a smaller disk.</li>
+</ul> 
+
+The goal of the this section is to automatically create domain and problem files for of the Tower of Hanoi problem for any number of disks.
+For any <code>n</code> we will enumerate the disks from <code>0</code> to <code>n-1</code> where <code>0</code> is the smallest disk
+and <code>n-1</code> is the largest, and we will use the letters  <code>a</code>, <code>b</code> and <code>c</code> to
+denote the three pegs.  
+
+
+<p><em><strong>Question 13 (3 points) </strong></em>
+
+Implement the <code>createDomainFile</code> function in <code>hanoi.py</code>. 
+The function receives as input a string <code>domainFileName</code> and an integer <code>n</code>.
+The function creates the domain file (named <code>domainFileName</code>) for the the Tower of Hanoi puzzle with <code>n</code> disks.
+See <code>dwrDomain.txt</code> for an example to a domain file.</p>
+
+
+<p><em><strong>Question 14 (2 points) </strong></em>
+
+Implement the <code>createProblemFile</code> function in <code>hanoi.py</code>. 
+The function receives as input a string <code>problemFileName</code> and an integer <code>n</code>.
+The function creates the problem file (named <code>problemFileName</code>) for the the Tower of Hanoi puzzle with <code>n</code> disks.
+In the initial state all the disks are on the first peg in  a neat stack in ascending order of size (I.e., disk <code>n</code> at the bottom).
+In the goal state all  the disks are in the same order but on the last peg.
+See <code>dwrProblem.txt</code> for an example to a problem file.</p>
+
+<p>	
+Now, for every positive integer <code>n</code> the command 
+
+<pre>python3 hanoi.py n</pre></p>
+Should create the files <code>hanoi[n]Domain.txt</code> and 
+<code>hanoi[n]Problem.txt</code>. (For example, the command <code>python3 hanoi.py 3</code> should create the files 
+<code>hanoi3Domain.txt</code> and 
+<code>hanoi3Problem.txt</code>)
+
+
+<p> <em>Hint:</em> The minimum number of moves required to solve a Tower of Hanoi puzzle is <code>2<sup>n</sup> - 1</code>.<p>
+
+
+<p><em>Miss Pac-Man? Wait for the next project.. </em></p>
+
+</body>
+</html>

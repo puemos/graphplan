@@ -1,0 +1,87 @@
+<html>
+  <head>
+  <title>action.py</title>
+  </head>
+  <body>
+  <h3>action.py (<a href="../action.py">original</a>)</h3>
+  <hr>
+  <pre>
+<span style="color: blue; font-weight: bold">class </span>Action<span style="font-weight: bold">(</span>object<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  The action class is used to define operators.
+  Each action has a list of preconditions, an "add list" of positive effects,
+  a "delete list" for negative effects, and the name of the action.
+  The lists for preconditions and effects are lists of Proposition objects.
+  Two actions are considered equal if they have the same name.
+  """
+  
+  </span><span style="color: blue; font-weight: bold">def </span>__init__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>name<span style="font-weight: bold">, </span>pre<span style="font-weight: bold">, </span>add<span style="font-weight: bold">, </span>delete<span style="font-weight: bold">, </span>isNoOp <span style="font-weight: bold">= </span><span style="color: blue; font-weight: bold">False</span><span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Constructor
+    """
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>pre <span style="font-weight: bold">= </span>pre        <span style="color: green; font-style: italic"># list of the precondition propositions 
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>add <span style="font-weight: bold">= </span>add            <span style="color: green; font-style: italic"># list of the propositions that will be added after applying the action    
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>delete <span style="font-weight: bold">= </span>delete  <span style="color: green; font-style: italic"># list of the propositions that will be deleted after applying the action    
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name <span style="font-weight: bold">= </span>name      <span style="color: green; font-style: italic"># the name of the action as string
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noOp <span style="font-weight: bold">= </span>isNoOp      <span style="color: green; font-style: italic"># true if the action is a noOp
+    
+  </span><span style="color: blue; font-weight: bold">def </span>getPre<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>pre
+  
+  <span style="color: blue; font-weight: bold">def </span>getAdd<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>add
+  
+  <span style="color: blue; font-weight: bold">def </span>getDelete<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>delete
+  
+  <span style="color: blue; font-weight: bold">def </span>getName<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name
+  
+  <span style="color: blue; font-weight: bold">def </span>isPreCond<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>prop<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span>prop <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>pre
+  
+  
+  <span style="color: blue; font-weight: bold">def </span>isPosEffect<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>prop<span style="font-weight: bold">): 
+    </span><span style="color: darkred">"""
+    True if the proposition prop is a positive effect of the action
+    """
+    </span><span style="color: blue; font-weight: bold">return </span>prop <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>add
+  
+  <span style="color: blue; font-weight: bold">def </span>isNegEffect<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>prop<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Returns true if the proposition prop is a negative effect of the action 
+    """
+    </span><span style="color: blue; font-weight: bold">return </span>prop <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>delete
+
+  <span style="color: blue; font-weight: bold">def </span>allPrecondsInList<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>propositions<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Returns true if all the precondition of the action
+    are in the propositions list
+    """
+    </span><span style="color: blue; font-weight: bold">for </span>pre <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>pre<span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">if </span>pre <span style="color: blue; font-weight: bold">not in </span>propositions<span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">return False
+    return True
+    
+  def </span>isNoOp<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Returns true if the action in noOp action
+    """
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noOp
+  
+  <span style="color: blue; font-weight: bold">def </span>__eq__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="font-weight: bold">(</span>isinstance<span style="font-weight: bold">(</span>other<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__class__<span style="font-weight: bold">)
+      </span><span style="color: blue; font-weight: bold">and </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name <span style="font-weight: bold">== </span>other<span style="font-weight: bold">.</span>name<span style="font-weight: bold">)
+
+  </span><span style="color: blue; font-weight: bold">def </span>__str__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name
+  
+  <span style="color: blue; font-weight: bold">def </span>__ne__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return not </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__eq__<span style="font-weight: bold">(</span>other<span style="font-weight: bold">)
+    
+  </span><span style="color: blue; font-weight: bold">def </span>__lt__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name <span style="font-weight: bold">&lt; </span>other<span style="font-weight: bold">.</span>name 
+  </pre>
+  </body>
+  </html>
+  

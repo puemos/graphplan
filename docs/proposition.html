@@ -1,0 +1,53 @@
+<html>
+  <head>
+  <title>proposition.py</title>
+  </head>
+  <body>
+  <h3>proposition.py (<a href="../proposition.py">original</a>)</h3>
+  <hr>
+  <pre>
+<span style="color: blue; font-weight: bold">class </span>Proposition<span style="font-weight: bold">(</span>object<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  A class for representing propositions. 
+  Each proposition object has a name and a list of producers,
+  that is the actions that have the proposition on their add list.
+  Two propositions are considered equal if they have the same name.
+  """
+
+  </span><span style="color: blue; font-weight: bold">def </span>__init__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">,</span>name<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Constructor
+    """
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name <span style="font-weight: bold">= </span>name    <span style="color: green; font-style: italic"># the name of the proposition as string
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>producers <span style="font-weight: bold">= []  </span><span style="color: green; font-style: italic"># list of all possible actions in the layer that have the proposition on their add list
+    
+  </span><span style="color: blue; font-weight: bold">def </span>getName<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name
+  
+  <span style="color: blue; font-weight: bold">def </span>getProducers<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>producers
+
+  <span style="color: blue; font-weight: bold">def </span>setProducers<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>producers<span style="font-weight: bold">):
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>producers <span style="font-weight: bold">= </span>producers
+  
+  <span style="color: blue; font-weight: bold">def </span>addProducer<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>producer<span style="font-weight: bold">):
+      </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>producers<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>producer<span style="font-weight: bold">)  
+  
+  </span><span style="color: blue; font-weight: bold">def </span>__eq__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="font-weight: bold">(</span>isinstance<span style="font-weight: bold">(</span>other<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__class__<span style="font-weight: bold">)
+      </span><span style="color: blue; font-weight: bold">and </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name <span style="font-weight: bold">== </span>other<span style="font-weight: bold">.</span>name<span style="font-weight: bold">)
+
+  </span><span style="color: blue; font-weight: bold">def </span>__str__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name
+
+  <span style="color: blue; font-weight: bold">def </span>__ne__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return not </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__eq__<span style="font-weight: bold">(</span>other<span style="font-weight: bold">)
+  
+  </span><span style="color: blue; font-weight: bold">def </span>__lt__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>name <span style="font-weight: bold">&lt; </span>other<span style="font-weight: bold">.</span>name 
+
+
+  </pre>
+  </body>
+  </html>
+  

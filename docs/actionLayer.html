@@ -1,0 +1,72 @@
+<html>
+  <head>
+  <title>actionLayer.py</title>
+  </head>
+  <body>
+  <h3>actionLayer.py (<a href="../actionLayer.py">original</a>)</h3>
+  <hr>
+  <pre>
+<span style="color: blue; font-weight: bold">from </span>util <span style="color: blue; font-weight: bold">import </span>Pair
+
+<span style="color: blue; font-weight: bold">class </span>ActionLayer<span style="font-weight: bold">(</span>object<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  A class for an ActionLayer in a level of the graph.
+  The layer contains a list of actions (action objects) and a list of mutex actions (Pair objects)
+  """
+
+
+  </span><span style="color: blue; font-weight: bold">def </span>__init__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Constructor
+    """
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions <span style="font-weight: bold">= []      </span><span style="color: green; font-style: italic"># list of all the actions in the layer
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>mutexActions <span style="font-weight: bold">= [] </span><span style="color: green; font-style: italic"># list of pairs of action that are mutex in the layer
+    
+  </span><span style="color: blue; font-weight: bold">def </span>addAction<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>act<span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># adds the action act to the actions list
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>act<span style="font-weight: bold">)
+    
+    
+  </span><span style="color: blue; font-weight: bold">def </span>removeActions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>act<span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># removes the action act to the actions list
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">.</span>remove<span style="font-weight: bold">(</span>act<span style="font-weight: bold">)
+    
+  </span><span style="color: blue; font-weight: bold">def </span>getActions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># returns the actions list
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions
+  
+  <span style="color: blue; font-weight: bold">def </span>getMutexActions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># returns the mutex actions list
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>mutexActions
+    
+  <span style="color: blue; font-weight: bold">def </span>addMutexActions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>a1<span style="font-weight: bold">, </span>a2<span style="font-weight: bold">):
+  </span><span style="color: green; font-style: italic"># add the pair (a1,a2) to the mutex actions list
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>mutexActions<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>Pair<span style="font-weight: bold">(</span>a1<span style="font-weight: bold">,</span>a2<span style="font-weight: bold">))
+  
+  
+  </span><span style="color: blue; font-weight: bold">def </span>isMutex<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>Pair<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Returns true if the pair of actions are mutex in this action layer
+     """
+    </span><span style="color: blue; font-weight: bold">return </span>Pair <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>mutexActions
+  
+  <span style="color: blue; font-weight: bold">def </span>effectExists<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>prop<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Returns true if at least one of the actions in this layer has the proposition prop in its add list
+    """ 
+    </span><span style="color: blue; font-weight: bold">for </span>act <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">if </span>prop <span style="color: blue; font-weight: bold">in </span>act<span style="font-weight: bold">.</span>getAdd<span style="font-weight: bold">():
+        </span><span style="color: blue; font-weight: bold">return True
+    return False
+  
+  def </span>__eq__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span><span style="font-weight: bold">(</span>isinstance<span style="font-weight: bold">(</span>other<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__class__<span style="font-weight: bold">)
+      </span><span style="color: blue; font-weight: bold">and </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__dict__ <span style="font-weight: bold">== </span>other<span style="font-weight: bold">.</span>__dict__<span style="font-weight: bold">)
+
+  </span><span style="color: blue; font-weight: bold">def </span>__ne__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>other<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return not </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>__eq__<span style="font-weight: bold">(</span>other<span style="font-weight: bold">)
+</span>
+  </pre>
+  </body>
+  </html>
+  

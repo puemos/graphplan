@@ -1,0 +1,95 @@
+<html>
+  <head>
+  <title>Parser.py</title>
+  </head>
+  <body>
+  <h3>Parser.py (<a href="../Parser.py">original</a>)</h3>
+  <hr>
+  <pre>
+<span style="color: blue; font-weight: bold">from </span>action <span style="color: blue; font-weight: bold">import </span>Action
+<span style="color: blue; font-weight: bold">from </span>proposition <span style="color: blue; font-weight: bold">import </span>Proposition
+
+<span style="color: blue; font-weight: bold">class </span>Parser<span style="font-weight: bold">(</span>object<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  A utility class for parsing the domain and problem.
+  """
+
+
+  </span><span style="color: blue; font-weight: bold">def </span>__init__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>domainFile<span style="font-weight: bold">, </span>problemFile<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Constructor
+    """
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>domainFile <span style="font-weight: bold">= </span>domainFile
+    <span style="color: blue">self</span><span style="font-weight: bold">.</span>problemFile <span style="font-weight: bold">= </span>problemFile
+    
+
+  <span style="color: blue; font-weight: bold">def </span>parseActionsAndPropositions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span>propositions <span style="font-weight: bold">= []
+    </span>f <span style="font-weight: bold">= </span>open<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>domainFile<span style="font-weight: bold">, </span><span style="color: red">'r'</span><span style="font-weight: bold">)
+    </span>line <span style="font-weight: bold">= </span>f<span style="font-weight: bold">.</span>readline<span style="font-weight: bold">()
+    </span>propositionLine <span style="font-weight: bold">= </span>f<span style="font-weight: bold">.</span>readline<span style="font-weight: bold">()
+    </span>words <span style="font-weight: bold">= [</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">() </span><span style="color: blue; font-weight: bold">for </span>word <span style="color: blue; font-weight: bold">in </span>propositionLine<span style="font-weight: bold">.</span>split<span style="font-weight: bold">(</span><span style="color: red">" "</span><span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">()) &gt; </span><span style="color: red">0</span><span style="font-weight: bold">]
+    </span><span style="color: blue; font-weight: bold">for </span>i <span style="color: blue; font-weight: bold">in </span>range<span style="font-weight: bold">(</span><span style="color: red">0</span><span style="font-weight: bold">, </span>len<span style="font-weight: bold">(</span>words<span style="font-weight: bold">)):
+      </span>propositions<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>Proposition<span style="font-weight: bold">(</span>words<span style="font-weight: bold">[</span>i<span style="font-weight: bold">]))     
+    </span>actions <span style="font-weight: bold">= []
+    </span>f <span style="font-weight: bold">= </span>open<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>domainFile<span style="font-weight: bold">, </span><span style="color: red">'r'</span><span style="font-weight: bold">)
+    </span>line <span style="font-weight: bold">= </span>f<span style="font-weight: bold">.</span>readline<span style="font-weight: bold">()
+    </span><span style="color: blue; font-weight: bold">while</span><span style="font-weight: bold">(</span>line <span style="font-weight: bold">!= </span><span style="color: red">''</span><span style="font-weight: bold">):
+      </span>words <span style="font-weight: bold">=  [</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">() </span><span style="color: blue; font-weight: bold">for </span>word <span style="color: blue; font-weight: bold">in </span>line<span style="font-weight: bold">.</span>split<span style="font-weight: bold">(</span><span style="color: red">" "</span><span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">()) &gt; </span><span style="color: red">0</span><span style="font-weight: bold">]
+      </span><span style="color: blue; font-weight: bold">if</span><span style="font-weight: bold">(</span>words<span style="font-weight: bold">[</span><span style="color: red">0</span><span style="font-weight: bold">] == </span><span style="color: red">'Name:'</span><span style="font-weight: bold">):
+        </span>name <span style="font-weight: bold">= </span>words<span style="font-weight: bold">[</span><span style="color: red">1</span><span style="font-weight: bold">]
+        </span>line <span style="font-weight: bold">= </span>f<span style="font-weight: bold">.</span>readline<span style="font-weight: bold">()
+        </span>precond <span style="font-weight: bold">= []
+        </span>add <span style="font-weight: bold">= []
+        </span>delete <span style="font-weight: bold">= []
+        </span>words <span style="font-weight: bold">= [</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">() </span><span style="color: blue; font-weight: bold">for </span>word <span style="color: blue; font-weight: bold">in </span>line<span style="font-weight: bold">.</span>split<span style="font-weight: bold">(</span><span style="color: red">" "</span><span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">()) &gt; </span><span style="color: red">0</span><span style="font-weight: bold">]
+        </span><span style="color: blue; font-weight: bold">for </span>i <span style="color: blue; font-weight: bold">in </span>range<span style="font-weight: bold">(</span><span style="color: red">1</span><span style="font-weight: bold">, </span>len<span style="font-weight: bold">(</span>words<span style="font-weight: bold">)):
+          </span>precond<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>Proposition<span style="font-weight: bold">(</span>words<span style="font-weight: bold">[</span>i<span style="font-weight: bold">]))
+        </span>line <span style="font-weight: bold">= </span>f<span style="font-weight: bold">.</span>readline<span style="font-weight: bold">()
+        </span>words <span style="font-weight: bold">= [</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">() </span><span style="color: blue; font-weight: bold">for </span>word <span style="color: blue; font-weight: bold">in </span>line<span style="font-weight: bold">.</span>split<span style="font-weight: bold">(</span><span style="color: red">" "</span><span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">()) &gt; </span><span style="color: red">0</span><span style="font-weight: bold">]
+        </span><span style="color: blue; font-weight: bold">for </span>i <span style="color: blue; font-weight: bold">in </span>range<span style="font-weight: bold">(</span><span style="color: red">1</span><span style="font-weight: bold">, </span>len<span style="font-weight: bold">(</span>words<span style="font-weight: bold">)):
+          </span>add<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>Proposition<span style="font-weight: bold">(</span>words<span style="font-weight: bold">[</span>i<span style="font-weight: bold">]))
+        </span>line <span style="font-weight: bold">= </span>f<span style="font-weight: bold">.</span>readline<span style="font-weight: bold">()
+        </span>words <span style="font-weight: bold">= [</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">() </span><span style="color: blue; font-weight: bold">for </span>word <span style="color: blue; font-weight: bold">in </span>line<span style="font-weight: bold">.</span>split<span style="font-weight: bold">(</span><span style="color: red">" "</span><span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">()) &gt; </span><span style="color: red">0</span><span style="font-weight: bold">]
+        </span><span style="color: blue; font-weight: bold">for </span>i <span style="color: blue; font-weight: bold">in </span>range<span style="font-weight: bold">(</span><span style="color: red">1</span><span style="font-weight: bold">, </span>len<span style="font-weight: bold">(</span>words<span style="font-weight: bold">)):
+          </span>delete<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>Proposition<span style="font-weight: bold">(</span>words<span style="font-weight: bold">[</span>i<span style="font-weight: bold">]))   
+        </span>act <span style="font-weight: bold">= </span>Action<span style="font-weight: bold">(</span>name<span style="font-weight: bold">,</span>precond<span style="font-weight: bold">,</span>add<span style="font-weight: bold">,</span>delete<span style="font-weight: bold">) 
+        </span><span style="color: blue; font-weight: bold">for </span>prop <span style="color: blue; font-weight: bold">in </span>add<span style="font-weight: bold">:
+          </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>findPropByName<span style="font-weight: bold">(</span>prop<span style="font-weight: bold">, </span>propositions<span style="font-weight: bold">).</span>addProducer<span style="font-weight: bold">(</span>act<span style="font-weight: bold">)
+        </span>actions<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>act<span style="font-weight: bold">)
+      </span>line <span style="font-weight: bold">= </span>f<span style="font-weight: bold">.</span>readline<span style="font-weight: bold">()
+      
+    </span><span style="color: blue; font-weight: bold">for </span>a <span style="color: blue; font-weight: bold">in </span>actions<span style="font-weight: bold">:
+      </span>new_pre <span style="font-weight: bold">= [</span>p <span style="color: blue; font-weight: bold">for </span>p <span style="color: blue; font-weight: bold">in </span>propositions <span style="color: blue; font-weight: bold">if </span>p<span style="font-weight: bold">.</span>name <span style="color: blue; font-weight: bold">in </span><span style="font-weight: bold">[</span>q<span style="font-weight: bold">.</span>name <span style="color: blue; font-weight: bold">for </span>q <span style="color: blue; font-weight: bold">in </span>a<span style="font-weight: bold">.</span>pre<span style="font-weight: bold">]]
+      </span>new_add <span style="font-weight: bold">= [</span>p <span style="color: blue; font-weight: bold">for </span>p <span style="color: blue; font-weight: bold">in </span>propositions <span style="color: blue; font-weight: bold">if </span>p<span style="font-weight: bold">.</span>name <span style="color: blue; font-weight: bold">in </span><span style="font-weight: bold">[</span>q<span style="font-weight: bold">.</span>name <span style="color: blue; font-weight: bold">for </span>q <span style="color: blue; font-weight: bold">in </span>a<span style="font-weight: bold">.</span>add<span style="font-weight: bold">]]
+      </span>new_delete <span style="font-weight: bold">= [</span>p <span style="color: blue; font-weight: bold">for </span>p <span style="color: blue; font-weight: bold">in </span>propositions <span style="color: blue; font-weight: bold">if </span>p<span style="font-weight: bold">.</span>name <span style="color: blue; font-weight: bold">in </span><span style="font-weight: bold">[</span>q<span style="font-weight: bold">.</span>name <span style="color: blue; font-weight: bold">for </span>q <span style="color: blue; font-weight: bold">in </span>a<span style="font-weight: bold">.</span>delete<span style="font-weight: bold">]]
+      </span>a<span style="font-weight: bold">.</span>pre <span style="font-weight: bold">= </span>new_pre
+      a<span style="font-weight: bold">.</span>add <span style="font-weight: bold">= </span>new_add
+      a<span style="font-weight: bold">.</span>delete <span style="font-weight: bold">= </span>new_delete
+      
+    <span style="color: blue; font-weight: bold">return </span><span style="font-weight: bold">[</span>actions<span style="font-weight: bold">, </span>propositions<span style="font-weight: bold">]
+  
+  </span><span style="color: blue; font-weight: bold">def </span>findPropByName<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>name<span style="font-weight: bold">, </span>propositions<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">for </span>prop <span style="color: blue; font-weight: bold">in </span>propositions<span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">if </span>prop <span style="font-weight: bold">== </span>name<span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">return </span>prop
+  
+  <span style="color: blue; font-weight: bold">def </span>pasreProblem<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span>init <span style="font-weight: bold">= []
+    </span>goal <span style="font-weight: bold">= []
+    </span>f <span style="font-weight: bold">= </span>open<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>problemFile<span style="font-weight: bold">, </span><span style="color: red">'r'</span><span style="font-weight: bold">)
+    </span>line <span style="font-weight: bold">= </span>f<span style="font-weight: bold">.</span>readline<span style="font-weight: bold">()
+    </span>words <span style="font-weight: bold">= [</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">() </span><span style="color: blue; font-weight: bold">for </span>word <span style="color: blue; font-weight: bold">in </span>line<span style="font-weight: bold">.</span>split<span style="font-weight: bold">(</span><span style="color: red">" "</span><span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">()) &gt; </span><span style="color: red">0</span><span style="font-weight: bold">]
+    </span><span style="color: blue; font-weight: bold">for </span>i <span style="color: blue; font-weight: bold">in </span>range<span style="font-weight: bold">(</span><span style="color: red">2</span><span style="font-weight: bold">, </span>len<span style="font-weight: bold">(</span>words<span style="font-weight: bold">)):
+      </span>init<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>Proposition<span style="font-weight: bold">(</span>words<span style="font-weight: bold">[</span>i<span style="font-weight: bold">]))
+    </span>line <span style="font-weight: bold">= </span>f<span style="font-weight: bold">.</span>readline<span style="font-weight: bold">()
+    </span>words <span style="font-weight: bold">= [</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">() </span><span style="color: blue; font-weight: bold">for </span>word <span style="color: blue; font-weight: bold">in </span>line<span style="font-weight: bold">.</span>split<span style="font-weight: bold">(</span><span style="color: red">" "</span><span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>word<span style="font-weight: bold">.</span>rstrip<span style="font-weight: bold">()) &gt; </span><span style="color: red">0</span><span style="font-weight: bold">]
+    </span><span style="color: blue; font-weight: bold">for </span>i <span style="color: blue; font-weight: bold">in </span>range<span style="font-weight: bold">(</span><span style="color: red">2</span><span style="font-weight: bold">, </span>len<span style="font-weight: bold">(</span>words<span style="font-weight: bold">)):
+      </span>goal<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>Proposition<span style="font-weight: bold">(</span>words<span style="font-weight: bold">[</span>i<span style="font-weight: bold">]))
+    </span><span style="color: blue; font-weight: bold">return </span><span style="font-weight: bold">[</span>init<span style="font-weight: bold">, </span>goal<span style="font-weight: bold">]
+  
+</span>
+  </pre>
+  </body>
+  </html>
+  

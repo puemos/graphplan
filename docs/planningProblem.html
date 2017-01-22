@@ -1,0 +1,155 @@
+<html>
+  <head>
+  <title>planningProblem.py</title>
+  </head>
+  <body>
+  <h3>planningProblem.py (<a href="../planningProblem.py">original</a>)</h3>
+  <hr>
+  <pre>
+<span style="color: blue; font-weight: bold">from </span>util <span style="color: blue; font-weight: bold">import </span>Pair
+<span style="color: blue; font-weight: bold">import </span>copy
+<span style="color: blue; font-weight: bold">from </span>propositionLayer <span style="color: blue; font-weight: bold">import </span>PropositionLayer
+<span style="color: blue; font-weight: bold">from </span>planGraphLevel <span style="color: blue; font-weight: bold">import </span>PlanGraphLevel
+<span style="color: blue; font-weight: bold">from </span>Parser <span style="color: blue; font-weight: bold">import </span>Parser
+<span style="color: blue; font-weight: bold">from </span>action <span style="color: blue; font-weight: bold">import </span>Action
+
+<span style="color: blue; font-weight: bold">try</span><span style="font-weight: bold">:
+  </span><span style="color: blue; font-weight: bold">from </span>search <span style="color: blue; font-weight: bold">import </span>SearchProblem
+  <span style="color: blue; font-weight: bold">from </span>search <span style="color: blue; font-weight: bold">import </span>aStarSearch
+
+<span style="color: blue; font-weight: bold">except</span><span style="font-weight: bold">:
+  </span><span style="color: blue; font-weight: bold">from  </span>CPF<span style="font-weight: bold">.</span>search <span style="color: blue; font-weight: bold">import </span>SearchProblem
+  <span style="color: blue; font-weight: bold">from  </span>CPF<span style="font-weight: bold">.</span>search <span style="color: blue; font-weight: bold">import </span>aStarSearch
+
+<span style="color: blue; font-weight: bold">class </span>PlanningProblem<span style="font-weight: bold">():
+  </span><span style="color: blue; font-weight: bold">def </span>__init__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>domain<span style="font-weight: bold">, </span>problem<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Constructor
+    """
+    </span>p <span style="font-weight: bold">= </span>Parser<span style="font-weight: bold">(</span>domain<span style="font-weight: bold">, </span>problem<span style="font-weight: bold">)
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions <span style="font-weight: bold">= </span>p<span style="font-weight: bold">.</span>parseActionsAndPropositions<span style="font-weight: bold">()   
+                                            </span><span style="color: green; font-style: italic"># list of all the actions and list of all the propositions
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>initialState<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>goal <span style="font-weight: bold">= </span>p<span style="font-weight: bold">.</span>pasreProblem<span style="font-weight: bold">()                 
+                                            </span><span style="color: green; font-style: italic"># the initial state and the goal state are lists of propositions
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>createNoOps<span style="font-weight: bold">()                                           </span><span style="color: green; font-style: italic"># creates noOps that are used to propagate existing propositions from one layer to the next
+    </span>PlanGraphLevel<span style="font-weight: bold">.</span>setActions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">)
+    </span>PlanGraphLevel<span style="font-weight: bold">.</span>setProps<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions<span style="font-weight: bold">)
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>_expanded <span style="font-weight: bold">= </span><span style="color: red">0
+   
+    
+  </span><span style="color: blue; font-weight: bold">def </span>getStartState<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: red">"*** YOUR CODE HERE ***"
+    
+  </span><span style="color: blue; font-weight: bold">def </span>isGoalState<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>state<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Hint: you might want to take a look at goalStateNotInPropLayer function
+    """
+    </span><span style="color: red">"*** YOUR CODE HERE ***"
+    
+  </span><span style="color: blue; font-weight: bold">def </span>getSuccessors<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>state<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""   
+    For a given state, this should return a list of triples, 
+    (successor, action, stepCost), where 'successor' is a 
+    successor to the current state, 'action' is the action
+    required to get there, and 'stepCost' is the incremental 
+    cost of expanding to that successor, 1 in our case.
+    You might want to this function:
+    For a list of propositions l and action a,
+    a.allPrecondsInList(l) returns true if the preconditions of a are in l
+    """
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>_expanded <span style="font-weight: bold">+= </span><span style="color: red">1
+    "*** YOUR CODE HERE ***"
+
+  </span><span style="color: blue; font-weight: bold">def </span>getCostOfActions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>actions<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span>len<span style="font-weight: bold">(</span>actions<span style="font-weight: bold">)
+    
+  </span><span style="color: blue; font-weight: bold">def </span>goalStateNotInPropLayer<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>propositions<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Helper function that returns true if all the goal propositions 
+    are in propositions
+    """
+    </span><span style="color: blue; font-weight: bold">for </span>goal <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>goal<span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">if </span>goal <span style="color: blue; font-weight: bold">not in </span>propositions<span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">return True
+    return False
+
+  def </span>createNoOps<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Creates the noOps that are used to propagate propositions from one layer to the next
+    """
+    </span><span style="color: blue; font-weight: bold">for </span>prop <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions<span style="font-weight: bold">:
+      </span>name <span style="font-weight: bold">= </span>prop<span style="font-weight: bold">.</span>name
+      precon <span style="font-weight: bold">= []
+      </span>add <span style="font-weight: bold">= []
+      </span>precon<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>prop<span style="font-weight: bold">)
+      </span>add<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>prop<span style="font-weight: bold">)
+      </span>delete <span style="font-weight: bold">= []
+      </span>act <span style="font-weight: bold">= </span>Action<span style="font-weight: bold">(</span>name<span style="font-weight: bold">,</span>precon<span style="font-weight: bold">,</span>add<span style="font-weight: bold">,</span>delete<span style="font-weight: bold">, </span><span style="color: blue; font-weight: bold">True</span><span style="font-weight: bold">)
+      </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>act<span style="font-weight: bold">)  
+      
+</span><span style="color: blue; font-weight: bold">def </span>maxLevel<span style="font-weight: bold">(</span>state<span style="font-weight: bold">, </span>problem<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  The heuristic value is the number of layers required to expand all goal propositions.
+  If the goal is not reachable from the state your heuristic should return float('inf')  
+  A good place to start would be:
+  propLayerInit = PropositionLayer()          #create a new proposition layer
+  for prop in state:
+    propLayerInit.addProposition(prop)        #update the proposition layer with the propositions of the state
+  pgInit = PlanGraphLevel()                   #create a new plan graph level (level is the action layer and the propositions layer)
+  pgInit.setPropositionLayer(propLayerInit)   #update the new plan graph level with the the proposition layer
+  """
+  </span><span style="color: red">"*** YOUR CODE HERE ***"
+  
+</span><span style="color: blue; font-weight: bold">def </span>levelSum<span style="font-weight: bold">(</span>state<span style="font-weight: bold">, </span>problem<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  The heuristic value is the sum of sub-goals level they first appeared.
+  If the goal is not reachable from the state your heuristic should return float('inf')
+  """
+  </span><span style="color: red">"*** YOUR CODE HERE ***"
+  
+</span><span style="color: blue; font-weight: bold">def </span>isFixed<span style="font-weight: bold">(</span>Graph<span style="font-weight: bold">, </span>level<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  Checks if we have reached a fixed point,
+  i.e. each level we'll expand would be the same, thus no point in continuing
+  """
+  </span><span style="color: blue; font-weight: bold">if </span>level <span style="font-weight: bold">== </span><span style="color: red">0</span><span style="font-weight: bold">:
+    </span><span style="color: blue; font-weight: bold">return False  
+  return </span>len<span style="font-weight: bold">(</span>Graph<span style="font-weight: bold">[</span>level<span style="font-weight: bold">].</span>getPropositionLayer<span style="font-weight: bold">().</span>getPropositions<span style="font-weight: bold">()) == </span>len<span style="font-weight: bold">(</span>Graph<span style="font-weight: bold">[</span>level <span style="font-weight: bold">- </span><span style="color: red">1</span><span style="font-weight: bold">].</span>getPropositionLayer<span style="font-weight: bold">().</span>getPropositions<span style="font-weight: bold">())  
+      
+</span><span style="color: blue; font-weight: bold">if </span>__name__ <span style="font-weight: bold">== </span><span style="color: red">'__main__'</span><span style="font-weight: bold">:
+  </span><span style="color: blue; font-weight: bold">import </span>sys
+  <span style="color: blue; font-weight: bold">import </span>time
+  <span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">) != </span><span style="color: red">1 </span><span style="color: blue; font-weight: bold">and </span>len<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">) != </span><span style="color: red">4</span><span style="font-weight: bold">:
+    </span><span style="color: blue; font-weight: bold">print</span><span style="font-weight: bold">(</span><span style="color: red">"Usage: PlanningProblem.py domainName problemName heuristicName(max, sum or zero)"</span><span style="font-weight: bold">)
+    </span>exit<span style="font-weight: bold">()
+  </span>domain <span style="font-weight: bold">= </span><span style="color: red">'dwrDomain.txt'
+  </span>problem <span style="font-weight: bold">= </span><span style="color: red">'dwrProblem.txt'
+  </span>heuristic <span style="font-weight: bold">= </span><span style="color: blue; font-weight: bold">lambda </span>x<span style="font-weight: bold">,</span>y<span style="font-weight: bold">: </span><span style="color: red">0
+  </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">) == </span><span style="color: red">4</span><span style="font-weight: bold">:
+    </span>domain <span style="font-weight: bold">= </span>str<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">[</span><span style="color: red">1</span><span style="font-weight: bold">])
+    </span>problem <span style="font-weight: bold">= </span>str<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">[</span><span style="color: red">2</span><span style="font-weight: bold">])
+    </span><span style="color: blue; font-weight: bold">if </span>str<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">[</span><span style="color: red">3</span><span style="font-weight: bold">]) == </span><span style="color: red">'max'</span><span style="font-weight: bold">:
+      </span>heuristic <span style="font-weight: bold">= </span>maxLevel
+    <span style="color: blue; font-weight: bold">elif </span>str<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">[</span><span style="color: red">3</span><span style="font-weight: bold">]) == </span><span style="color: red">'sum'</span><span style="font-weight: bold">:
+      </span>heuristic <span style="font-weight: bold">= </span>levelSum
+    <span style="color: blue; font-weight: bold">elif </span>str<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">[</span><span style="color: red">3</span><span style="font-weight: bold">]) == </span><span style="color: red">'zero'</span><span style="font-weight: bold">:
+      </span>heuristic <span style="font-weight: bold">= </span><span style="color: blue; font-weight: bold">lambda </span>x<span style="font-weight: bold">,</span>y<span style="font-weight: bold">: </span><span style="color: red">0
+    </span><span style="color: blue; font-weight: bold">else</span><span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">print</span><span style="font-weight: bold">(</span><span style="color: red">"Usage: PlanningProblem.py domainName problemName heuristicName(max, sum or zero)"</span><span style="font-weight: bold">)
+      </span>exit<span style="font-weight: bold">()
+
+  </span>prob <span style="font-weight: bold">= </span>PlanningProblem<span style="font-weight: bold">(</span>domain<span style="font-weight: bold">, </span>problem<span style="font-weight: bold">)
+  </span>start <span style="font-weight: bold">= </span>time<span style="font-weight: bold">.</span>clock<span style="font-weight: bold">()
+  </span>plan <span style="font-weight: bold">= </span>aStarSearch<span style="font-weight: bold">(</span>prob<span style="font-weight: bold">, </span>heuristic<span style="font-weight: bold">)  
+  </span>elapsed <span style="font-weight: bold">= </span>time<span style="font-weight: bold">.</span>clock<span style="font-weight: bold">() - </span>start
+  <span style="color: blue; font-weight: bold">if </span>plan <span style="color: blue; font-weight: bold">is not </span><span style="color: blue">None</span><span style="font-weight: bold">:
+    </span><span style="color: blue; font-weight: bold">print</span><span style="font-weight: bold">(</span><span style="color: red">"Plan found with %d actions in %.2f seconds" </span><span style="font-weight: bold">% (</span>len<span style="font-weight: bold">(</span>plan<span style="font-weight: bold">), </span>elapsed<span style="font-weight: bold">))
+  </span><span style="color: blue; font-weight: bold">else</span><span style="font-weight: bold">:
+    </span><span style="color: blue; font-weight: bold">print</span><span style="font-weight: bold">(</span><span style="color: red">"Could not find a plan in %.2f seconds" </span><span style="font-weight: bold">%  </span>elapsed<span style="font-weight: bold">)
+  </span><span style="color: blue; font-weight: bold">print</span><span style="font-weight: bold">(</span><span style="color: red">"Search nodes expanded: %d" </span><span style="font-weight: bold">% </span>prob<span style="font-weight: bold">.</span>_expanded<span style="font-weight: bold">)
+ 
+</span>
+  </pre>
+  </body>
+  </html>
+  

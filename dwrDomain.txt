@@ -1,0 +1,83 @@
+Propositions:
+r1 r2 q1 q2 ur uq a1 a2 ar aq b1 b2 br bq 
+Actions:
+Name: Mr12 
+pre: r1 
+add: r2 
+delete: r1 
+Name: Mr21 
+pre: r2 
+add: r1 
+delete: r2 
+Name: Mq12 
+pre: q1 
+add: q2 
+delete: q1 
+Name: Mq21 
+pre: q2 
+add: q1 
+delete: q2 
+Name: Lar1 
+pre: r1 a1 ur 
+add: ar 
+delete: a1 ur 
+Name: Lar2 
+pre: r2 a2 ur 
+add: ar 
+delete: a2 ur 
+Name: Laq1  
+pre: q1 a1 uq 
+add: aq 
+delete: a1 uq 
+Name: Laq2 
+pre: q2 a2 uq 
+add: aq 
+delete: a2 uq 
+Name: Lbr1 
+pre: r1 b1 ur 
+add: br 
+delete: b1 ur 
+Name: Lbr2 
+pre: r2 b2 ur 
+add: br 
+delete: b2 ur 
+Name: Lbq1 
+pre: q1 b1 uq 
+add: bq 
+delete: b1 uq 
+Name: Lbq2 
+pre: q2 b2 uq 
+add: bq 
+delete: b2 uq 
+Name: Uar1 
+pre: r1 ar 
+add: ur a1 
+delete: ar 
+Name: Uar2 
+pre: r2 ar 
+add: ur a2 
+delete: ar 
+Name: Uaq1 
+pre: q1 aq 
+add: uq a1 
+delete: aq 
+Name: Uaq2 
+pre: q2 aq 
+add: uq a2 
+delete: aq 
+Name: Ubr1 
+pre: r1 br 
+add: ur b1 
+delete: br 
+Name: Ubr2 
+pre: r2 br 
+add: ur b2 
+delete: br 
+Name: Ubq1 
+pre: q1 bq 
+add: uq b1 
+delete: bq 
+Name: Ubq2 
+pre: q2 bq 
+add: uq b2 
+delete: bq 

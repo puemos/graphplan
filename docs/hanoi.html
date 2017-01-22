@@ -1,0 +1,41 @@
+<html>
+  <head>
+  <title>hanoi.py</title>
+  </head>
+  <body>
+  <h3>hanoi.py (<a href="../hanoi.py">original</a>)</h3>
+  <hr>
+  <pre>
+<span style="color: blue; font-weight: bold">def </span>createDomainFile<span style="font-weight: bold">(</span>domainFileName<span style="font-weight: bold">, </span>n<span style="font-weight: bold">):
+  </span>numbers <span style="font-weight: bold">= </span>list<span style="font-weight: bold">(</span>range<span style="font-weight: bold">(</span>n<span style="font-weight: bold">)) </span><span style="color: green; font-style: italic"># [0,...,n-1]
+  </span>pegs <span style="font-weight: bold">= [</span><span style="color: red">'a'</span><span style="font-weight: bold">,</span><span style="color: red">'b'</span><span style="font-weight: bold">, </span><span style="color: red">'c'</span><span style="font-weight: bold">]
+  </span>domainFile <span style="font-weight: bold">= </span>open<span style="font-weight: bold">(</span>domainFileName<span style="font-weight: bold">, </span><span style="color: red">'w'</span><span style="font-weight: bold">) </span><span style="color: green; font-style: italic">#use domainFile.write(str) to write to domainFile
+  </span><span style="color: red">"*** YOUR CODE HERE ***"
+  
+  </span>domainFile<span style="font-weight: bold">.</span>close<span style="font-weight: bold">()  
+        
+  
+</span><span style="color: blue; font-weight: bold">def </span>createProblemFile<span style="font-weight: bold">(</span>problemFileName<span style="font-weight: bold">, </span>n<span style="font-weight: bold">):
+  </span>numbers <span style="font-weight: bold">= </span>list<span style="font-weight: bold">(</span>range<span style="font-weight: bold">(</span>n<span style="font-weight: bold">)) </span><span style="color: green; font-style: italic"># [0,...,n-1]
+  </span>pegs <span style="font-weight: bold">= [</span><span style="color: red">'a'</span><span style="font-weight: bold">,</span><span style="color: red">'b'</span><span style="font-weight: bold">, </span><span style="color: red">'c'</span><span style="font-weight: bold">]
+  </span>problemFile <span style="font-weight: bold">= </span>open<span style="font-weight: bold">(</span>problemFileName<span style="font-weight: bold">, </span><span style="color: red">'w'</span><span style="font-weight: bold">) </span><span style="color: green; font-style: italic">#use problemFile.write(str) to write to problemFile
+  </span><span style="color: red">"*** YOUR CODE HERE ***"
+  
+  </span>problemFile<span style="font-weight: bold">.</span>close<span style="font-weight: bold">()
+
+</span><span style="color: blue; font-weight: bold">import </span>sys
+<span style="color: blue; font-weight: bold">if </span>__name__ <span style="font-weight: bold">== </span><span style="color: red">'__main__'</span><span style="font-weight: bold">:
+  </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">) != </span><span style="color: red">2</span><span style="font-weight: bold">:
+    </span><span style="color: blue; font-weight: bold">print</span><span style="font-weight: bold">(</span><span style="color: red">'Usage: hanoi.py n'</span><span style="font-weight: bold">)
+    </span>sys<span style="font-weight: bold">.</span>exit<span style="font-weight: bold">(</span><span style="color: red">2</span><span style="font-weight: bold">)
+  
+  </span>n <span style="font-weight: bold">= </span>int<span style="font-weight: bold">(</span>float<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">[</span><span style="color: red">1</span><span style="font-weight: bold">])) </span><span style="color: green; font-style: italic">#number of disks
+  </span>domainFileName <span style="font-weight: bold">= </span><span style="color: red">'hanoi' </span><span style="font-weight: bold">+ </span>str<span style="font-weight: bold">(</span>n<span style="font-weight: bold">) + </span><span style="color: red">'Domain.txt'
+  </span>problemFileName <span style="font-weight: bold">= </span><span style="color: red">'hanoi' </span><span style="font-weight: bold">+ </span>str<span style="font-weight: bold">(</span>n<span style="font-weight: bold">) + </span><span style="color: red">'Problem.txt'
+  
+  </span>createDomainFile<span style="font-weight: bold">(</span>domainFileName<span style="font-weight: bold">, </span>n<span style="font-weight: bold">)
+  </span>createProblemFile<span style="font-weight: bold">(</span>problemFileName<span style="font-weight: bold">, </span>n<span style="font-weight: bold">)</span>
+  </pre>
+  </body>
+  </html>
+  

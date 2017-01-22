@@ -1,0 +1,248 @@
+<html>
+  <head>
+  <title>graphPlan.py</title>
+  </head>
+  <body>
+  <h3>graphPlan.py (<a href="../graphPlan.py">original</a>)</h3>
+  <hr>
+  <pre>
+<span style="color: blue; font-weight: bold">from </span>util <span style="color: blue; font-weight: bold">import </span>Pair
+<span style="color: blue; font-weight: bold">import </span>copy
+<span style="color: blue; font-weight: bold">from </span>propositionLayer <span style="color: blue; font-weight: bold">import </span>PropositionLayer
+<span style="color: blue; font-weight: bold">from </span>planGraphLevel <span style="color: blue; font-weight: bold">import </span>PlanGraphLevel
+<span style="color: blue; font-weight: bold">from </span>action <span style="color: blue; font-weight: bold">import </span>Action
+<span style="color: blue; font-weight: bold">from </span>Parser <span style="color: blue; font-weight: bold">import </span>Parser
+
+<span style="color: blue; font-weight: bold">class </span>GraphPlan<span style="font-weight: bold">(</span>object<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  A class for initializing and running the graphplan algorithm
+  """
+
+  </span><span style="color: blue; font-weight: bold">def </span>__init__<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">,</span>domain<span style="font-weight: bold">, </span>problem<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Constructor
+    """
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>independentActions <span style="font-weight: bold">= []
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods <span style="font-weight: bold">= []
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph <span style="font-weight: bold">= []
+    </span>p <span style="font-weight: bold">= </span>Parser<span style="font-weight: bold">(</span>domain<span style="font-weight: bold">, </span>problem<span style="font-weight: bold">)
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions <span style="font-weight: bold">= </span>p<span style="font-weight: bold">.</span>parseActionsAndPropositions<span style="font-weight: bold">()   </span><span style="color: green; font-style: italic"># list of all the actions and list of all the propositions
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>initialState<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>goal <span style="font-weight: bold">= </span>p<span style="font-weight: bold">.</span>pasreProblem<span style="font-weight: bold">()                     </span><span style="color: green; font-style: italic"># the initial state and the goal state are lists of propositions
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>createNoOps<span style="font-weight: bold">()                                                   </span><span style="color: green; font-style: italic"># creates noOps that are used to propagate existing propositions from one layer to the next
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>independent<span style="font-weight: bold">()                                                   </span><span style="color: green; font-style: italic"># creates independent actions list and updates self.independentActions
+    </span>PlanGraphLevel<span style="font-weight: bold">.</span>setIndependentActions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>independentActions<span style="font-weight: bold">)
+    </span>PlanGraphLevel<span style="font-weight: bold">.</span>setActions<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">)
+    </span>PlanGraphLevel<span style="font-weight: bold">.</span>setProps<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions<span style="font-weight: bold">)
+ 
+    
+  </span><span style="color: blue; font-weight: bold">def </span>graphPlan<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">): 
+    </span><span style="color: darkred">"""
+    The graphplan algorithm. 
+    The code calls the extract function which you should complete below
+    """    
+    </span><span style="color: green; font-style: italic">#initialization
+    </span>initState <span style="font-weight: bold">= </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>initialState
+    level <span style="font-weight: bold">= </span><span style="color: red">0
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods <span style="font-weight: bold">= [] </span><span style="color: green; font-style: italic">#make sure you update noGoods in your backward search!
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods<span style="font-weight: bold">.</span>append<span style="font-weight: bold">([])
+    </span><span style="color: green; font-style: italic">#create first layer of the graph, note it only has a proposition layer which consists of the initial state.
+    </span>propLayerInit <span style="font-weight: bold">= </span>PropositionLayer<span style="font-weight: bold">()
+    </span><span style="color: blue; font-weight: bold">for </span>prop <span style="color: blue; font-weight: bold">in </span>initState<span style="font-weight: bold">:
+      </span>propLayerInit<span style="font-weight: bold">.</span>addProposition<span style="font-weight: bold">(</span>prop<span style="font-weight: bold">)
+    </span>pgInit <span style="font-weight: bold">= </span>PlanGraphLevel<span style="font-weight: bold">()
+    </span>pgInit<span style="font-weight: bold">.</span>setPropositionLayer<span style="font-weight: bold">(</span>propLayerInit<span style="font-weight: bold">)
+    </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>pgInit<span style="font-weight: bold">)   
+    
+    </span><span style="color: darkred">"""
+    While the layer does not contain all of the propositions in the goal state,
+    or some of these propositions are mutex in the layer we,
+    and we have not reached the fixed point, continue expanding the graph
+    """
+   
+    </span><span style="color: blue; font-weight: bold">while </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>goalStateNotInPropLayer<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">[</span>level<span style="font-weight: bold">].</span>getPropositionLayer<span style="font-weight: bold">().</span>getPropositions<span style="font-weight: bold">()) </span><span style="color: blue; font-weight: bold">or </span>\
+        <span style="color: blue">self</span><span style="font-weight: bold">.</span>goalStateHasMutex<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">[</span>level<span style="font-weight: bold">].</span>getPropositionLayer<span style="font-weight: bold">()):
+      </span><span style="color: blue; font-weight: bold">if </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>isFixed<span style="font-weight: bold">(</span>level<span style="font-weight: bold">):
+        </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">None </span><span style="color: green; font-style: italic">#this means we stopped the while loop above because we reached a fixed point in the graph. nothing more to do, we failed!
+        
+      </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods<span style="font-weight: bold">.</span>append<span style="font-weight: bold">([])
+      </span>level <span style="font-weight: bold">= </span>level <span style="font-weight: bold">+ </span><span style="color: red">1
+      </span>pgNext <span style="font-weight: bold">= </span>PlanGraphLevel<span style="font-weight: bold">() </span><span style="color: green; font-style: italic">#create new PlanGraph object
+      </span>pgNext<span style="font-weight: bold">.</span>expand<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">[</span>level <span style="font-weight: bold">- </span><span style="color: red">1</span><span style="font-weight: bold">]) </span><span style="color: green; font-style: italic">#calls the expand function, which you are implementing in the PlanGraph class
+      </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>pgNext<span style="font-weight: bold">) </span><span style="color: green; font-style: italic">#appending the new level to the plan graph
+    
+      </span>sizeNoGood <span style="font-weight: bold">= </span>len<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods<span style="font-weight: bold">[</span>level<span style="font-weight: bold">]) </span><span style="color: green; font-style: italic">#remember size of nogood table
+    
+    </span>plan <span style="font-weight: bold">= </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>extract<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>goal<span style="font-weight: bold">, </span>level<span style="font-weight: bold">) </span><span style="color: green; font-style: italic">#try to extract a plan since all of the goal propositions are in current graph level, and are not mutex
+    </span><span style="color: blue; font-weight: bold">while</span><span style="font-weight: bold">(</span>plan <span style="color: blue; font-weight: bold">is </span><span style="color: blue">None</span><span style="font-weight: bold">): </span><span style="color: green; font-style: italic">#while we didn't extract a plan successfully       
+      </span>level <span style="font-weight: bold">= </span>level <span style="font-weight: bold">+ </span><span style="color: red">1 
+      </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods<span style="font-weight: bold">.</span>append<span style="font-weight: bold">([])
+      </span>pgNext <span style="font-weight: bold">= </span>PlanGraphLevel<span style="font-weight: bold">() </span><span style="color: green; font-style: italic">#create next level of the graph by expanding
+      </span>pgNext<span style="font-weight: bold">.</span>expand<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">[</span>level <span style="font-weight: bold">- </span><span style="color: red">1</span><span style="font-weight: bold">]) </span><span style="color: green; font-style: italic">#create next level of the graph by expanding
+      </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>pgNext<span style="font-weight: bold">)
+      </span>plan <span style="font-weight: bold">= </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>extract<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">, </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>goal<span style="font-weight: bold">, </span>level<span style="font-weight: bold">) </span><span style="color: green; font-style: italic">#try to extract a plan again
+      </span><span style="color: blue; font-weight: bold">if </span><span style="font-weight: bold">(</span>plan <span style="color: blue; font-weight: bold">is </span><span style="color: blue">None </span><span style="color: blue; font-weight: bold">and </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>isFixed<span style="font-weight: bold">(</span>level<span style="font-weight: bold">)): </span><span style="color: green; font-style: italic">#if failed and reached fixed point
+        </span><span style="color: blue; font-weight: bold">if </span>sizeNoGood <span style="font-weight: bold">== </span>len<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods<span style="font-weight: bold">[</span>level<span style="font-weight: bold">]): </span><span style="color: green; font-style: italic">#if size of nogood didn't change, means there's nothing more to do. We failed.
+          </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">None
+        </span>sizeNoGood <span style="font-weight: bold">= </span>len<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods<span style="font-weight: bold">[</span>level<span style="font-weight: bold">]) </span><span style="color: green; font-style: italic">#we didn't fail yet! update size of no good
+    </span><span style="color: blue; font-weight: bold">return </span>plan
+   
+
+  <span style="color: blue; font-weight: bold">def </span>extract<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>Graph<span style="font-weight: bold">, </span>subGoals<span style="font-weight: bold">, </span>level<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    The backsearch part of graphplan that tries
+    to extract a plan when all goal propositions exist in a graph plan level.   
+    """
+    
+    </span><span style="color: blue; font-weight: bold">if </span>level <span style="font-weight: bold">== </span><span style="color: red">0</span><span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">return </span><span style="font-weight: bold">[]
+    </span><span style="color: blue; font-weight: bold">if </span>subGoals <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods<span style="font-weight: bold">[</span>level<span style="font-weight: bold">]:
+      </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">None
+    </span>plan <span style="font-weight: bold">= </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>gpSearch<span style="font-weight: bold">(</span>Graph<span style="font-weight: bold">, </span>subGoals<span style="font-weight: bold">, [], </span>level<span style="font-weight: bold">)
+    </span><span style="color: blue; font-weight: bold">if </span>plan <span style="color: blue; font-weight: bold">is not </span><span style="color: blue">None</span><span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">return </span>plan
+    <span style="color: blue">self</span><span style="font-weight: bold">.</span>noGoods<span style="font-weight: bold">[</span>level<span style="font-weight: bold">].</span>append<span style="font-weight: bold">([</span>subGoals<span style="font-weight: bold">])
+    </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">None
+     
+  </span><span style="color: blue; font-weight: bold">def </span>gpSearch<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>Graph<span style="font-weight: bold">, </span>subGoals<span style="font-weight: bold">, </span>plan<span style="font-weight: bold">, </span>level<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">if </span>subGoals <span style="font-weight: bold">== []:
+      </span>newGoals <span style="font-weight: bold">= []
+      </span><span style="color: blue; font-weight: bold">for </span>action <span style="color: blue; font-weight: bold">in </span>plan<span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">for </span>prop <span style="color: blue; font-weight: bold">in </span>action<span style="font-weight: bold">.</span>getPre<span style="font-weight: bold">():
+          </span><span style="color: blue; font-weight: bold">if </span>prop <span style="color: blue; font-weight: bold">not in </span>newGoals<span style="font-weight: bold">:
+            </span>newGoals<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>prop<span style="font-weight: bold">)                      
+      </span>newPlan <span style="font-weight: bold">= </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>extract<span style="font-weight: bold">(</span>Graph<span style="font-weight: bold">, </span>newGoals<span style="font-weight: bold">, </span>level <span style="font-weight: bold">- </span><span style="color: red">1</span><span style="font-weight: bold">)
+      </span><span style="color: blue; font-weight: bold">if </span>newPlan <span style="color: blue; font-weight: bold">is </span><span style="color: blue">None</span><span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">return </span><span style="color: blue">None
+      </span><span style="color: blue; font-weight: bold">else</span><span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">return </span>newPlan <span style="font-weight: bold">+ </span>plan
+        
+    prop <span style="font-weight: bold">= </span>subGoals<span style="font-weight: bold">[</span><span style="color: red">0</span><span style="font-weight: bold">]
+    </span>providers <span style="font-weight: bold">= []
+    </span><span style="color: blue; font-weight: bold">for </span>action1 <span style="color: blue; font-weight: bold">in </span><span style="font-weight: bold">[</span>act <span style="color: blue; font-weight: bold">for </span>act <span style="color: blue; font-weight: bold">in </span>Graph<span style="font-weight: bold">[</span>level<span style="font-weight: bold">].</span>getActionLayer<span style="font-weight: bold">().</span>getActions<span style="font-weight: bold">() </span><span style="color: blue; font-weight: bold">if </span>prop <span style="color: blue; font-weight: bold">in </span>act<span style="font-weight: bold">.</span>getAdd<span style="font-weight: bold">()]:
+      </span>noMutex <span style="font-weight: bold">= </span><span style="color: blue; font-weight: bold">True
+      for </span>action2 <span style="color: blue; font-weight: bold">in </span>plan<span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">if </span>Pair<span style="font-weight: bold">(</span>action1<span style="font-weight: bold">, </span>action2<span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">not in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>independentActions<span style="font-weight: bold">:
+          </span>noMutex <span style="font-weight: bold">= </span><span style="color: blue; font-weight: bold">False
+          break
+      if </span>noMutex<span style="font-weight: bold">:
+        </span>providers<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>action1<span style="font-weight: bold">)
+    </span><span style="color: blue; font-weight: bold">for </span>action <span style="color: blue; font-weight: bold">in </span>providers<span style="font-weight: bold">:
+      </span>newSubGoals <span style="font-weight: bold">= [</span>g <span style="color: blue; font-weight: bold">for </span>g <span style="color: blue; font-weight: bold">in </span>subGoals <span style="color: blue; font-weight: bold">if </span>g <span style="color: blue; font-weight: bold">not in </span>action<span style="font-weight: bold">.</span>getAdd<span style="font-weight: bold">()]
+      </span>planClone <span style="font-weight: bold">= </span>list<span style="font-weight: bold">(</span>plan<span style="font-weight: bold">)
+      </span>planClone<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>action<span style="font-weight: bold">)
+      </span>newPlan <span style="font-weight: bold">= </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>gpSearch<span style="font-weight: bold">(</span>Graph<span style="font-weight: bold">, </span>newSubGoals<span style="font-weight: bold">, </span>planClone<span style="font-weight: bold">, </span>level<span style="font-weight: bold">)
+      </span><span style="color: blue; font-weight: bold">if </span>newPlan <span style="color: blue; font-weight: bold">is not </span><span style="color: blue">None</span><span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">return </span>newPlan
+    <span style="color: blue; font-weight: bold">return </span><span style="color: blue">None
+    
+    
+  </span><span style="color: blue; font-weight: bold">def </span>goalStateNotInPropLayer<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>propositions<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Helper function that receives a  list of propositions (propositions) and returns true 
+    if not all the goal propositions are in that list    
+    """
+    </span><span style="color: blue; font-weight: bold">for </span>goal <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>goal<span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">if </span>goal <span style="color: blue; font-weight: bold">not in </span>propositions<span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">return True
+    return False    
+    
+  def </span>goalStateHasMutex<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>propLayer<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Helper function that checks whether all goal propositions are non mutex at the current graph level
+    """
+    </span><span style="color: blue; font-weight: bold">for </span>goal1 <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>goal<span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">for </span>goal2 <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>goal<span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">if </span>propLayer<span style="font-weight: bold">.</span>isMutex<span style="font-weight: bold">(</span>goal1<span style="font-weight: bold">,</span>goal2<span style="font-weight: bold">):
+          </span><span style="color: blue; font-weight: bold">return True
+    return False
+    
+  def </span>isFixed<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>level<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Checks if we have reached a fixed point, i.e. each level we'll expand would be the same, thus no point in continuing
+    """
+    </span><span style="color: blue; font-weight: bold">if </span>level <span style="font-weight: bold">== </span><span style="color: red">0</span><span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">return False
+    
+    if </span>len<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">[</span>level<span style="font-weight: bold">].</span>getPropositionLayer<span style="font-weight: bold">().</span>getPropositions<span style="font-weight: bold">()) == </span>len<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">[</span>level <span style="font-weight: bold">- </span><span style="color: red">1</span><span style="font-weight: bold">].</span>getPropositionLayer<span style="font-weight: bold">().</span>getPropositions<span style="font-weight: bold">()) </span><span style="color: blue; font-weight: bold">and </span>\
+      len<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">[</span>level<span style="font-weight: bold">].</span>getPropositionLayer<span style="font-weight: bold">().</span>getMutexProps<span style="font-weight: bold">()) == </span>len<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">.</span>graph<span style="font-weight: bold">[</span>level <span style="font-weight: bold">- </span><span style="color: red">1</span><span style="font-weight: bold">].</span>getPropositionLayer<span style="font-weight: bold">().</span>getMutexProps<span style="font-weight: bold">()):
+      </span><span style="color: blue; font-weight: bold">return True
+    return False  
+    
+  def </span>createNoOps<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Creates the noOps that are used to propagate propositions from one layer to the next
+    """   
+    </span><span style="color: blue; font-weight: bold">for </span>prop <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>propositions<span style="font-weight: bold">:
+      </span>name <span style="font-weight: bold">= </span>prop<span style="font-weight: bold">.</span>name
+      precon <span style="font-weight: bold">= []
+      </span>add <span style="font-weight: bold">= []
+      </span>precon<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>prop<span style="font-weight: bold">)
+      </span>add<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>prop<span style="font-weight: bold">)
+      </span>delete <span style="font-weight: bold">= []
+      </span>act <span style="font-weight: bold">= </span>Action<span style="font-weight: bold">(</span>name<span style="font-weight: bold">,</span>precon<span style="font-weight: bold">,</span>add<span style="font-weight: bold">,</span>delete<span style="font-weight: bold">, </span><span style="color: blue; font-weight: bold">True</span><span style="font-weight: bold">)
+      </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>act<span style="font-weight: bold">)
+      </span>prop<span style="font-weight: bold">.</span>addProducer<span style="font-weight: bold">(</span>act<span style="font-weight: bold">)
+   
+  </span><span style="color: blue; font-weight: bold">def </span>independent<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Creates a list of independent actions
+    """
+    </span><span style="color: blue; font-weight: bold">for </span>act1 <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">for </span>act2 <span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>actions<span style="font-weight: bold">:
+        </span><span style="color: blue; font-weight: bold">if </span>independentPair<span style="font-weight: bold">(</span>act1<span style="font-weight: bold">,</span>act2<span style="font-weight: bold">):
+          </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>independentActions<span style="font-weight: bold">.</span>append<span style="font-weight: bold">(</span>Pair<span style="font-weight: bold">(</span>act1<span style="font-weight: bold">,</span>act2<span style="font-weight: bold">)) 
+
+  </span><span style="color: blue; font-weight: bold">def </span>isIndependent<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>a1<span style="font-weight: bold">, </span>a2<span style="font-weight: bold">):
+    </span><span style="color: blue; font-weight: bold">return </span>Pair<span style="font-weight: bold">(</span>a1<span style="font-weight: bold">,</span>a2<span style="font-weight: bold">) </span><span style="color: blue; font-weight: bold">in </span><span style="color: blue">self</span><span style="font-weight: bold">.</span>independentActions  
+  
+    
+  <span style="color: blue; font-weight: bold">def </span>noMutexActionInPlan<span style="font-weight: bold">(</span><span style="color: blue">self</span><span style="font-weight: bold">, </span>plan<span style="font-weight: bold">, </span>act<span style="font-weight: bold">, </span>actionLayer<span style="font-weight: bold">):
+    </span><span style="color: darkred">"""
+    Helper action that you may want to use when extracting plans,
+    returns true if there are no mutex actions in the plan
+    """
+    </span><span style="color: blue; font-weight: bold">for </span>planAct <span style="color: blue; font-weight: bold">in </span>plan<span style="font-weight: bold">:
+      </span><span style="color: blue; font-weight: bold">if </span>actionLayer<span style="font-weight: bold">.</span>isMutex<span style="font-weight: bold">(</span>Pair<span style="font-weight: bold">(</span>planAct<span style="font-weight: bold">,</span>act<span style="font-weight: bold">)):
+        </span><span style="color: blue; font-weight: bold">return False
+    return True  
+
+def </span>independentPair<span style="font-weight: bold">(</span>a1<span style="font-weight: bold">, </span>a2<span style="font-weight: bold">):
+  </span><span style="color: darkred">"""
+  Returns true if the actions are neither have inconsistent effects
+  nor they interfere one with the other.
+  You might want to use those functions:
+  a1.getPre() returns the pre list of a1
+  a1.getAdd() returns the add list of a1
+  a1.getDelete() return the del list of a1
+  a1.isPreCond(p) returns true is p is in a1.getPre()
+  a1.isPosEffect(p) returns true is p is in a1.getAdd()
+  a1.isNegEffect(p) returns true is p is in a1.getDel()
+  """
+  </span><span style="color: red">"*** YOUR CODE HERE ***"
+    
+</span><span style="color: blue; font-weight: bold">if </span>__name__ <span style="font-weight: bold">== </span><span style="color: red">'__main__'</span><span style="font-weight: bold">:  
+  </span><span style="color: blue; font-weight: bold">import </span>sys
+  <span style="color: blue; font-weight: bold">import </span>time
+  <span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">) != </span><span style="color: red">1 </span><span style="color: blue; font-weight: bold">and </span>len<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">) != </span><span style="color: red">3</span><span style="font-weight: bold">:
+    </span><span style="color: blue; font-weight: bold">print</span><span style="font-weight: bold">(</span><span style="color: red">"Usage: GraphPlan.py domainName problemName"</span><span style="font-weight: bold">)
+    </span>exit<span style="font-weight: bold">()
+  </span>domain <span style="font-weight: bold">= </span><span style="color: red">'dwrDomain.txt'
+  </span>problem <span style="font-weight: bold">= </span><span style="color: red">'dwrProblem.txt'
+  </span><span style="color: blue; font-weight: bold">if </span>len<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">) == </span><span style="color: red">3</span><span style="font-weight: bold">:
+    </span>domain <span style="font-weight: bold">= </span>str<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">[</span><span style="color: red">1</span><span style="font-weight: bold">])
+    </span>problem <span style="font-weight: bold">= </span>str<span style="font-weight: bold">(</span>sys<span style="font-weight: bold">.</span>argv<span style="font-weight: bold">[</span><span style="color: red">2</span><span style="font-weight: bold">])
+
+  </span>gp <span style="font-weight: bold">= </span>GraphPlan<span style="font-weight: bold">(</span>domain<span style="font-weight: bold">, </span>problem<span style="font-weight: bold">)
+  </span>start <span style="font-weight: bold">= </span>time<span style="font-weight: bold">.</span>clock<span style="font-weight: bold">()
+  </span>plan <span style="font-weight: bold">= </span>gp<span style="font-weight: bold">.</span>graphPlan<span style="font-weight: bold">()
+  </span>elapsed <span style="font-weight: bold">= </span>time<span style="font-weight: bold">.</span>clock<span style="font-weight: bold">() - </span>start
+  <span style="color: blue; font-weight: bold">if </span>plan <span style="color: blue; font-weight: bold">is not </span><span style="color: blue">None</span><span style="font-weight: bold">:
+    </span><span style="color: blue; font-weight: bold">print</span><span style="font-weight: bold">(</span><span style="color: red">"Plan found with %d actions in %.2f seconds" </span><span style="font-weight: bold">% (</span>len<span style="font-weight: bold">([</span>act <span style="color: blue; font-weight: bold">for </span>act <span style="color: blue; font-weight: bold">in </span>plan <span style="color: blue; font-weight: bold">if not </span>act<span style="font-weight: bold">.</span>isNoOp<span style="font-weight: bold">()]), </span>elapsed<span style="font-weight: bold">))
+  </span><span style="color: blue; font-weight: bold">else</span><span style="font-weight: bold">:
+    </span><span style="color: blue; font-weight: bold">print</span><span style="font-weight: bold">(</span><span style="color: red">"Could not find a plan in %.2f seconds" </span><span style="font-weight: bold">%  </span>elapsed<span style="font-weight: bold">)
+ 
+</span>
+  </pre>
+  </body>
+  </html>
+  
